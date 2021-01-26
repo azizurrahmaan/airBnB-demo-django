@@ -3,11 +3,10 @@
 {% block head_title %}{% trans "Update Profile" %}{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4">
-                <br/><br/>
+    
+<div class="container">
+    <div class="row justify-content-center mt-md-4 pt-md-4">
+        <div class="col-md-4 col-10">
                 <h2 class="text-center">Update Profile</h2>
                 <br/><br/>
                 <form method="post">
@@ -15,12 +14,11 @@
                     {{ form.as_p }}
                     <br/>
                     <div class="text-center">
-                        <button class="sign-btn" type="submit">Update</button>
+                        <button class="btn btn-lg btn-danger btn-block" type="submit">Update</button>
                     </div>
                 </form>
             </div>
-            <div class="col-4"></div>
-
         </div>
     </div>
+</div>
 {% endblock %}

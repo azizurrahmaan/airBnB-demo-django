@@ -35,8 +35,6 @@ class Properties(TemplateView):
             properties = Property.objects.filter(~Q(owner=self.request.user))
         else:
             properties = Property.objects.all()
-        print("Images...................")
-        print(properties.first().images)
         
         context = {"properties": properties}
         return context
