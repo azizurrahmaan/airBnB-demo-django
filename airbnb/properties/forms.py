@@ -47,8 +47,8 @@ class PropertyReviewForm(forms.ModelForm):
         self.user = kwargs.pop('user')
         super(PropertyReviewForm, self).__init__(*args, **kwargs)
     
-    def save(self, request):
+    def save(self):
         property_review = PropertyReview(**self.cleaned_data)
-        property_review.user = request.user
+        property_review.user = self.user
         property_review.save()
         return property_review

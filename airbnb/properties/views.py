@@ -6,6 +6,8 @@ from django.views.generic import CreateView, FormView, TemplateView, UpdateView
 from properties.models import Property, PropertyReview
 from django.db.models import Q
 from django.core import serializers
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
 class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'properties/dashboard.html'
@@ -106,10 +108,11 @@ class PropertyDetail(TemplateView):
 
 
 def add_property_review(request):
-    form = PropertyReviewForm(request.data, context={'request': request})
+    form = PropertyReviewForm(request.POST, user=request.user)
     if form.is_valid():
-        data = form.save()
+        property_review = form.save()
+        data = PropertyReview.objects.values('user__first_name', 'user__last_name', 'created_on', 'review').get(pk=property_review.id)
     else:
         data = form.errors
-    data = serializers.serialize('json', data)
-    return HttpResponse(data, content_type='application/json')
+    print(data)
+    return JsonResponse(data, safe=False)

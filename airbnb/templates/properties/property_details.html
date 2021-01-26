@@ -9,48 +9,158 @@
 <link rel="stylesheet" href="{% static 'css/property_details.css' %}"/>
     <div class="content-wrapper ml-0" style="min-height: 70px;">
        <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col">
-                
-                <div class="content-header">
-                    <div class="container-fluid">
-                        <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1 class="m-0 text-dark">Property Details</h1>
-                        </div>
-                        </div>
+          <div class="row justify-content-md-center">
+              <div class="col">
+                  
+                  <div class="content-header">
+                      <div class="container-fluid">
+                          <div class="row mb-2">
+                          <div class="col-sm-6">
+                              <h1 class="m-0 text-dark">Property Details</h1>
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <section class="content">
+                      <div class="container-fluid">
+                          
+                          <div class="wrapper row">
+                              <div class="preview col-md-6">
+                                  
+                                  <div class="preview-pic tab-content">
+                                    <div class="tab-pane active" id="pic-1"><img src="{% if property.images %}{{property.images.url}}{% endif %}"></div>
+                                  </div>
+                              </div>
+                              <div class="details col-md-6">
+                                  <h3 class="product-title">{% if property.property_name %}{{property.property_name}}{% else %}{{property.address}}{% endif %}</h3>
+                                  <p class="product-description">{{property.description}}</p>
+                                  <h4 class="price">Size: <span>{{property.building_size}}</span> SF</h4>
+                                  <p class="vote"><strong>Address</strong>: {{property.address}}</p>
+                              </div>
+                          </div>
+                      
+                      </div>
+                  </section>
+              </div>
+          </div>
+
+          <section class="content mt-5">
+            <div class="container-fluid">
+              
+              <div class="card-header">
+                <h2 class="m-0 text-dark">Reviews</h2>
+              </div>
+              <div class="card card-widget p-0">
+                <div class="card-footer card-comments" id="reviews">
+                 
+                  {% for review in reviews %}
+                    <div class="card-comment">
+                      <img class="img-circle img-sm" src="{% static 'icons/avatar.png' %}" alt="User Image">
+    
+                      <div class="comment-text">
+                        <span class="username">
+                          {{review.user.first_name}} {{review.user.last_name}}
+                          <span class="text-muted float-right">{{review.created_on}}</span>
+                        </span>
+                        {{review.review}}
+                      </div>
                     </div>
+                  {% endfor %}
+
+                  {% if not reviews.count %}
+                  <div class="text-center mt-3">
+                    <p>No reviews, be the first one to add.</p>
+                  </div>
+                  {% endif %}
+
                 </div>
-                
-                <section class="content">
-                    <div class="container-fluid">
-                        
-                        <div class="wrapper row">
-                            <div class="preview col-md-6">
-                                
-                                <div class="preview-pic tab-content">
-                                  <div class="tab-pane active" id="pic-1"><img src="{% if property.images %}{{property.images.url}}{% endif %}"></div>
-                                </div>
-                            </div>
-                            <div class="details col-md-6">
-                                <h3 class="product-title">{% if property.property_name %}{{property.property_name}}{% else %}{{property.address}}{% endif %}</h3>
-                                <p class="product-description">{{property.description}}</p>
-                                <h4 class="price">Size: <span>{{property.building_size}}</span> SF</h4>
-                                <p class="vote"><strong>Address</strong>: {{property.address}}</p>
-                            </div>
+
+                {% if user.is_authenticated %}
+                  <div class="card-footer">
+                    <form onsubmit="add_review(event)" method="post">
+                      {% csrf_token %}
+                      <img class="img-fluid img-circle img-sm" src="{% static 'icons/avatar.png' %}" alt="Alt Text">
+                      <div class="img-push">
+                        <textarea onkeyup="enable_submit_button(event)" name="review" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Press enter to post comment"></textarea>
+                      </div>
+                      <input type="text" name="property" value="{{property.id}}" hidden>
+                      <div class="row mt-2">
+                        <div class="col text-right">
+                          <button disabled type="submit" class="btn btn-danger">Post</button>
                         </div>
-                    
-                    </div>
-                </section>
-                {% for review in reviews %}
-                  <p>{{review.user.username}} : {{review.review}}</p>
-                {% endfor %}
+                      </div>
+                    </form>
+                  </div>
+                {% else %}
+                <div class="text-center mt-3">
+                  <p>Please <a href="{% url 'login' %}">login</a> to add a review.</p>
+                </div>
+                {% endif %}
+
+              </div>
+
             </div>
-        </div>
+          </section>
        </div>
     </div>
 
 {% endblock %}
 {% block extra_js %}
-
+<script>
+  function add_review(event){
+    event.preventDefault()
+    const csrfmiddlewaretoken = getCookie('csrftoken')
+    const review_textarea = $('textarea[name="review"]')
+    const property = $('input[name="property"]').val()
+    const review = review_textarea.val()
+    if(!review.trim()) return
+    const submit_button = $('button[type="submit"]')
+    submit_button.attr('disabled', 'disabled')
+    $.post("{% url 'add_property_review' %}", { review, property, csrfmiddlewaretoken }).then((review) => {
+      review_textarea.val(null)
+      append_review(review)
+      submit_button.removeAttr('disabled')
+    }).catch((err) => {
+      submit_button.removeAttr('disabled')
+    })
+  }
+  function append_review(review){
+    $("#reviews").append(`
+          <div class="card-comment">
+            <img class="img-circle img-sm" src="/static/icons/avatar.png" alt="User Image">
+            <div class="comment-text">
+              <span class="username">
+                ${review.user__first_name} ${review.user__last_name} 
+                <span class="text-muted float-right">${review.created_on}</span>
+              </span>
+              ${review.review}
+            </div>
+          </div>
+    `)
+  }
+  function enable_submit_button(event) { 
+    const textarea = $(event.target)
+    const submit_button = $('button[type="submit"]')
+    if(textarea.val().trim()){
+      submit_button.removeAttr('disabled')
+    }else{
+      submit_button.attr('disabled', 'disabled')
+    }
+  }
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}
