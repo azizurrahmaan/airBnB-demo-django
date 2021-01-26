@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, FormView, TemplateView
 from django.urls import reverse_lazy
-from .forms import SignUpForm, UpdateProfileForm
+from .forms import SignUpForm, UpdateProfileForm, CreateMessageForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Chat, Message
 from django.db.models import Q
+import json
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 def landing(request):
     """
@@ -56,3 +59,36 @@ class Chats(LoginRequiredMixin, TemplateView):
         chats = Chat.objects.filter(Q(owner=self.request.user) | Q(participants__in=[self.request.user]))
         context = {"chats": chats}
         return context
+
+
+@login_required
+def get_messages(request, chat_id):
+    chat = Chat.objects.filter(pk=chat_id).first()
+    if not chat:
+        data = {"errors": "Chat object does not exist."}
+    else:
+        if chat.owner == request.user or chat.participants.filter(id=request.user.id).exists():
+            data = list(Message.objects.filter(chat=chat).values('sender__first_name', 'sender__last_name', 'message', 'created_on'))
+            return JsonResponse(data, safe=False)
+        else:
+            data = {"errors": "You don't have permission to read the Chat."}
+    return JsonResponse(data)
+
+
+@login_required
+def send_message(request):
+    chat = Chat.objects.filter(pk=request.POST.get('chat_id')).first()
+    if not chat:
+        data = {"errors": "Chat object does not exist."}
+    else:
+        if chat.owner == request.user or chat.participants.filter(id=request.user.id).exists():
+            form = CreateMessageForm(request.POST)
+            if form.is_valid():
+                message = form.save()
+                data = list(message)
+            else:
+                data = form.errors
+            return JsonResponse(data, safe=False)
+        else:
+            data = {"errors": "You don't have permission to send message to this Chat."}
+    return JsonResponse(data)

@@ -5,8 +5,5 @@
 {% block content %}
     {% for chat in chats %}
         <p>Topic: {{chat.topic}}</p><br>
-        {% for message in chat.messages.all %}
-            <p><b>{{message.sender}}:</b> {{message.message}}</p>
-        {% endfor %}
     {% endfor %}
 {% endblock %}
