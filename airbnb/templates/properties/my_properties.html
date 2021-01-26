@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-
+{% block head_title %} My Properties {% endblock %}
 {% block content %}
 
 
 
-<div class="content-wrapper ml-0" style="min-height: 70px;">
+<div class="content-wrapper ml-0" style="min-height: 70px; height: 100vh;">
     <div class="container">
      <div class="row justify-content-md-center">
          <div class="col">
@@ -48,7 +48,12 @@
                                 <td><a href="{% url 'edit_property' property.id %} " title="Edit"><i class="fas fa-edit"></i></a></td>
                               </tr>
                             {% endfor %}
-                          
+
+                            {% if not properties.count %}
+                            <tr class="text-center">
+                                <td colspan="6"> You don't have any proeprties yet, <a href="{% url 'add_property' %}">Click to Add one</a>.</td>
+                            </tr>
+                            {% endif %}
                         </tbody>
                       </table>
                 
