@@ -114,5 +114,4 @@ def add_property_review(request):
         data = PropertyReview.objects.values('user__first_name', 'user__last_name', 'created_on', 'review').get(pk=property_review.id)
     else:
         data = form.errors
-    print(data)
     return JsonResponse(data, safe=False)
