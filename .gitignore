@@ -83,6 +83,7 @@ celerybeat-schedule
 
 # Environments
 airbnb/env
+airbnb/media
 .venv
 airbnb/env/
 venv/
