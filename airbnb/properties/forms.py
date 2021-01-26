@@ -1,5 +1,5 @@
 from django import forms
-from .models import Property
+from .models import Property, PropertyReview
 
 
 class AddPropertyForm(forms.ModelForm):
@@ -34,3 +34,21 @@ class EditPropertyForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(EditPropertyForm, self).__init__(*args, **kwargs)
+
+
+class PropertyReviewForm(forms.ModelForm):
+
+    class Meta:
+        model = PropertyReview
+        fields = ('property', 'review')
+        
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super(PropertyReviewForm, self).__init__(*args, **kwargs)
+    
+    def save(self, request):
+        property_review = PropertyReview(**self.cleaned_data)
+        property_review.user = request.user
+        property_review.save()
+        return property_review

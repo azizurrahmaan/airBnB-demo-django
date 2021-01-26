@@ -98,3 +98,21 @@ class Property(BaseModel):
     class Meta:
         ordering = ('-created_on',)
 
+
+class PropertyReview(BaseModel):
+    property = models.ForeignKey(
+        Property,
+        related_name='property_reviews',
+        on_delete=models.CASCADE
+    )
+
+    user = models.ForeignKey(
+        User,
+        related_name='property_reviews',
+        on_delete=models.CASCADE
+    )
+
+    review = models.TextField()
+
+    def __str__(self):
+        return f'{self.id} : {self.user} commented on {self.property}'

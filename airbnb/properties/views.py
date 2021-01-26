@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from .forms import AddPropertyForm, EditPropertyForm
+from .forms import AddPropertyForm, EditPropertyForm, PropertyReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, FormView, TemplateView, UpdateView
-from properties.models import Property
+from properties.models import Property, PropertyReview
 from django.db.models import Q
+from django.core import serializers
 
 class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'properties/dashboard.html'
@@ -40,7 +41,6 @@ class Properties(TemplateView):
         return context
 
 
-
 class MyProperties(LoginRequiredMixin, TemplateView):
     template_name = 'properties/my_properties.html'
     login_url = 'login'
@@ -54,6 +54,7 @@ class MyProperties(LoginRequiredMixin, TemplateView):
         properties = Property.objects.filter(Q(owner=self.request.user))
         context = {"properties": properties}
         return context
+
 
 class AddProperty(LoginRequiredMixin, FormView):
     login_url = 'login'
@@ -84,7 +85,7 @@ class EditProperty(LoginRequiredMixin, UpdateView):
         return Http404
 
     def get_object(self, queryset=None):
-        property = Property.objects.get(pk=self.kwargs['pk'])
+        property = Property.objects.get(slug=self.kwargs['slug'])
         return property
 
 
@@ -98,6 +99,17 @@ class PropertyDetail(TemplateView):
         # return Http404
 
     def get_context_data(self, **kwargs):
-        property = Property.objects.filter(pk=self.kwargs['pk']).first()
-        context = {"property": property}
+        property = Property.objects.filter(slug=self.kwargs['slug']).first()
+        reviews = PropertyReview.objects.filter(property=property)
+        context = {"property": property, "reviews": reviews}
         return context
+
+
+def add_property_review(request):
+    form = PropertyReviewForm(request.data, context={'request': request})
+    if form.is_valid():
+        data = form.save()
+    else:
+        data = form.errors
+    data = serializers.serialize('json', data)
+    return HttpResponse(data, content_type='application/json')
