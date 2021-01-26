@@ -1,5 +1,5 @@
 from django.urls import path, include
-from users.views import landing, SignUpView, UpdateProfile, Chats
+from users.views import landing, SignUpView, UpdateProfile, Chats, get_messages
 
 urlpatterns = [
     path('', landing, name='landing'),
@@ -9,4 +9,6 @@ urlpatterns = [
     path("profile/", UpdateProfile.as_view(), name="profile"),
     # Chats Urls
     path("chats/", Chats.as_view(), name="chats"),
+    path("messages/<int:chat_id>", get_messages, name="get_messages"),
+    path("messages/add", get_messages, name="messages"),
 ]
