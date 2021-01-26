@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+<style>
+    html {
+        --lh: 1.4rem;
+        line-height: var(--lh);
+    }
+    .truncate-overflow {
+        --max-lines: 3;
+        max-height: calc(var(--lh) * var(--max-lines));
+        overflow: hidden;
+    }
+    .truncate-overflow::before {
+        content: "...";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+    .truncate-overflow::after {
+        content: "";
+        position: absolute;
+        right: 0; /* note: not using bottom */
+        width: 1rem;
+        height: 1rem;
+        background: white;
+    }
+</style>
+    <div class="content-wrapper ml-0" style="min-height: 70px;">
+       <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark">Explore Places</h1>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <section class="content">
+                    <div class="container-fluid">
+                        
+                        <div class="row">
+                            
+                            {% for property in properties %}
+                                <div class="col-lg-3 col-6 mb-3">
+                                    <div class="card h-100">{{property.image}}
+                                        <img class="card-img-top" src="{% if property.images %}{{property.images.url}}{% endif %}" alt="Card image cap">
+                                        <div class="card-body">
+                                            <h5 class="card-title font-weight-bold">{{property.property_name}}</h5>
+                                            <p class="card-text position-relative truncate-overflow">{{property.description}}</p>
+                                            <a href="{% url 'detail_property' property.id %}" class="btn btn-primary">View Details →</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    
+                    </div>
+                </section>
+            </div>
+        </div>
+       </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+
+<script src="https://adminlte.io/themes/dev/AdminLTE/dist/js/adminlte.js"></script>
+
+
+{% endblock %}
