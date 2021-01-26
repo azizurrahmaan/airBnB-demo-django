@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users'
+    'address',
+    'django_better_admin_arrayfield',
+    'users',
+    'properties'
 ]
 
 MIDDLEWARE = [
@@ -79,8 +83,12 @@ WSGI_APPLICATION = 'airbnb.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': config('DB_ENGINE', default="django.db.backends.postgresql_psycopg2"),
+        'NAME': config('DB_NAME',default=""),
+        'USER': config('DB_USER',default=""),
+        'PASSWORD': config('DB_PASSWORD',default=""),
+        'HOST': config('DB_HOST',default=""),
+        'PORT': config('DB_PORT',default="")
     }
 }
 
@@ -125,3 +133,4 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "dashboard"
+GOOGLE_API_KEY = 'AIzaSyAcF8obkyb4kFkr-jneq1iBDRkFHqAldEo'

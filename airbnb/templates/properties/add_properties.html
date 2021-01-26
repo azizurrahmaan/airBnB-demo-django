@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block head_title %}{% trans "Sign Up" %}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <br/>
+                <h2 style="text-align: center;">Add Property</h2>
+                <br/><br/>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <br/>
+                    <div class="text-center">
+                        <button class="sign-btn" type="submit">ADD</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-4"></div>
+
+        </div>
+    </div>
+{% endblock %}

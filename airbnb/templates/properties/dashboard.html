@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for property in properties %}
+    <p>{{property.property_name}}</p>
+    <p>{{property.address}}</p>
+    <p>{{property.description}}</p>
+    <p>{{property.available_from}}</p>
+    <p>{{property.building_size}}</p>
+{% endfor %}
+{% endblock %}
