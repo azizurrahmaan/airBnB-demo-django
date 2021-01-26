@@ -45,7 +45,7 @@
                                 <td>{{property.available_from}}</td>
                                 <td>{{property.building_size}}</td>
                                 <td>{{property.address}}</td>
-                                <td><a href="{% url 'edit_property' property.id %} " title="Edit"><i class="fas fa-edit"></i></a></td>
+                                <td><a href="{% url 'edit_property' property.slug %} " title="Edit"><i class="fas fa-edit"></i></a></td>
                               </tr>
                             {% endfor %}
                           
