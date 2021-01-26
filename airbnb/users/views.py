@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, TemplateView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, UpdateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from .models import Chat, Message
+from django.db.models import Q
 
 def landing(request):
     """
@@ -40,3 +41,18 @@ class UpdateProfile(LoginRequiredMixin, FormView):
         kwargs = super(UpdateProfile, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
+
+class Chats(LoginRequiredMixin, TemplateView):
+    template_name = 'users/chats.html'
+    login_url = 'login'
+
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return super(Chats, self).get(request, *args, **kwargs)
+        return Http404
+
+    def get_context_data(self, **kwargs):
+        chats = Chat.objects.filter(Q(owner=self.request.user) | Q(participants__in=[self.request.user]))
+        context = {"chats": chats}
+        return context

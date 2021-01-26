@@ -7,7 +7,7 @@ class AddPropertyForm(forms.ModelForm):
     
     class Meta:
         model = Property
-        fields = ('__all__')
+        fields = ('property_name', 'address', 'features', 'description', 'available_from', 'building_size', 'images')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
