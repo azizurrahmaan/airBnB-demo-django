@@ -9,13 +9,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 def get_slug(instance):
-    if instance.address and instance.address.formatted:
-        formatted_address = instance.address.formatted.split(',')
-        if len(formatted_address) > 2:
-            return f'{formatted_address[0].strip()}-{formatted_address[1].strip()}-{formatted_address[2].strip()[:2]}'.lower().replace(
-                ' ', '-')
-    if instance.address and instance.address.raw:
-        return f'{instance.address.raw}-{instance.id}'.lower().replace(' ', '-')
+    return f'{instance.address}-{instance.id}'.lower().replace(' ', '-')
 
 
 class Property(BaseModel):
@@ -40,7 +34,7 @@ class Property(BaseModel):
         max_length=255
     )
    
-    address = AddressField(on_delete=models.CASCADE)
+    address =models.CharField(max_length=255,default="")
 
     
     features = ArrayField(

@@ -2,25 +2,19 @@
 {% load i18n %}
 {% block head_title %}{% trans "Sign Up" %}{% endblock %}
 
+{% load crispy_forms_tags %}
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4">
-                <br/>
-                <h2 style="text-align: center;">Create Account</h2>
-                <br/><br/>
-                <form method="post">
+        <div class="row justify-content-md-center mt-md-4 pt-md-4">
+            <div class="col-md-5">
+                <form class="form-signup"  method="post">
+                    <h1 class="h3 mb-3 font-weight-normal">Create your account</h1>
                     {% csrf_token %}
-                    {{ form.as_p }}
-                    <br/>
-                    <div class="text-center">
-                        <button class="sign-btn" type="submit">Sign Up</button>
-                    </div>
+                    {{ form| crispy }}
+                    <button  class="btn btn-lg btn-danger btn-block" type="submit">Sign Up</button>
+                    <p class="mt-5 mb-3 text-muted">&copy; 2021-2021</p>
                 </form>
             </div>
-            <div class="col-4"></div>
-
         </div>
     </div>
 {% endblock %}

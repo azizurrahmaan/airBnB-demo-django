@@ -1,11 +1,63 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% for property in properties %}
-    <p>{{property.property_name}}</p>
-    <p>{{property.address}}</p>
-    <p>{{property.description}}</p>
-    <p>{{property.available_from}}</p>
-    <p>{{property.building_size}}</p>
-{% endfor %}
+{% load static %}
+
+    <div class="content-wrapper ml-0" style="min-height: 70px;">
+       <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col">
+                
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark">Dashboard</h1>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <section class="content">
+                    <div class="container-fluid">
+                        
+                        <div class="row">
+                            <div class="col-lg-3 col-6">
+                                
+                                <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>{{properties_count}}</h3>
+        
+                                    <p>Propert{% if properties_count > 1 %}{{'ies'}}{% else %}{{'y'}}{% endif %}</p>
+                                </div>
+                                <a href="{% url 'my_properties' %}" class="small-box-footer">View All <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-3 col-6 mr-auto">
+                                
+                                <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>Add Property</h3>
+        
+                                    <p>Increase your worth</p>
+                                </div>
+                                <a href="{% url 'add_property' %}" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </section>
+                
+            </div>
+        </div>
+       </div>
+    </div>
+{% endblock %}
+{% block extra_js %}
+
+<script src="https://adminlte.io/themes/dev/AdminLTE/dist/js/adminlte.js"></script>
+
+
 {% endblock %}
