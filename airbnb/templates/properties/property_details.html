@@ -30,13 +30,21 @@
                                   
                                   <div class="preview-pic tab-content">
                                     <div class="tab-pane active" id="pic-1"><img src="{% if property.images %}{{property.images.url}}{% endif %}"></div>
+                                    <div class="mt-2">
+                                      <form action="{% url 'create_chat' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input hidden type="text" name='participants' value="{{property.owner.id}}">
+                                        <input hidden type="text" name='topic' value="{% if property.property_name %}{{property.property_name}}{% else %}{{property.address}}{% endif %}">
+                                        <button class="btn btn-danger" type="submit"> Contact Owner </button>
+                                      </form>
+                                    </div>
                                   </div>
                               </div>
                               <div class="details col-md-6">
-                                  <h3 class="product-title">{% if property.property_name %}{{property.property_name}}{% else %}{{property.address}}{% endif %}</h3>
-                                  <p class="product-description">{{property.description}}</p>
-                                  <h4 class="price">Size: <span>{{property.building_size}}</span> SF</h4>
-                                  <p class="vote"><strong>Address</strong>: {{property.address}}</p>
+                                <h3 class="product-title">{% if property.property_name %}{{property.property_name}}{% else %}{{property.address}}{% endif %}</h3>
+                                <p class="product-description">{{property.description}}</p>
+                                <h4 class="price">Size: <span>{{property.building_size}}</span> SF</h4>
+                                <p class="vote"><strong>Address</strong>: {{property.address}}</p>
                               </div>
                           </div>
                       
@@ -82,7 +90,7 @@
                       {% csrf_token %}
                       <img class="img-fluid img-circle img-sm" src="{% static 'icons/avatar.png' %}" alt="Alt Text">
                       <div class="img-push">
-                        <textarea onkeyup="enable_submit_button(event)" name="review" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Press enter to post comment"></textarea>
+                        <textarea onkeyup="enable_submit_button(event)" name="review" class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Type your revirew..."></textarea>
                       </div>
                       <input type="text" name="property" value="{{property.id}}" hidden>
                       <div class="row mt-2">
@@ -148,19 +156,5 @@
       submit_button.attr('disabled', 'disabled')
     }
   }
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
 </script>
 {% endblock %}

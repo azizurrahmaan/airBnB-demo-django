@@ -7,7 +7,6 @@ from properties.models import Property, PropertyReview
 from django.db.models import Q
 from django.core import serializers
 from django.http import JsonResponse
-from django.forms.models import model_to_dict
 
 class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'properties/dashboard.html'
