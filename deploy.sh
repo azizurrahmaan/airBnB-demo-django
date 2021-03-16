@@ -8,6 +8,7 @@ echo "Install requirements..."
 . /var/www/airbnb_project/venv/bin/activate
 
 pip install -r /var/www/airbnb_project/requirements.txt
+python3 manage.py migrate
 
 echo "Main service reload..."
 sudo systemctl restart nginx
